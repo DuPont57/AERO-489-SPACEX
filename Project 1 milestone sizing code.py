@@ -22,17 +22,17 @@ reserve_per = 5 #%
 
 #values from table in notes
 #cruise
-LD_c = 14
-cj_c = 0.7
+LD_c = 15
+cj_c = 0.5
 
 #assuming cruisng altitude of 35000 ft, mach 0.8, typical of this class of jets
-M_c = 0.8
+M_c = 0.85
 T_c = -65.61 + 459.67 #R
 a_c = np.sqrt(1.4*1716*T_c)
 V_c = M_c*a_c/6076.12*3600 #nm/hr
 #loiter
-LD_l = 16
-cj_l = 0.5
+LD_l = 18
+cj_l = 0.4
 #from range eq in notes, using jet eq, accounts for unit conversions
 FF_cruise = np.exp(-cruise_range*cj_c/V_c/LD_c)
 #from endurance eq in notes, using jet eq, accounts for unit conversions
@@ -86,7 +86,7 @@ print(f"Feul Weight W_F = {W_f:.2f} lbs")
 SFL = 9000 #ft
 STOFL = 9000
 rho = 0.002377 #slug/ft^3
-C_L_Max_L = 2.3 #In range for transport jets for Transport Jets from roskam
+C_L_Max_L = 2.6 #In range for transport jets for Transport Jets from roskam
 a = -2.5229 #all letter values from roskam 3.4 and 3.5
 b = 1.0000
 c = 0.0199
