@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 ### we need gross takeoff, empty and feul weight
@@ -44,7 +45,7 @@ w_endW0 = 0.99*0.99*0.995*0.98*FF_cruise*FF_loiter*.99*.992
 #5% feul reserves + trapped oil is negligible
 WfW0 = (1 - w_endW0) * (1+reserve_per/100)
 
-#this function gives the empty wieght fraction based on the function from roskam (basing off military patrol props)
+#this function gives the empty wieght fraction based on the function from roskam (basing off transoport jets)
 def empty_weight(W_0):
     
     #A, B for regression line from transport jets
@@ -78,3 +79,54 @@ print("Estimated Values:")
 print(f"Gross Takeoff Weight W_0 = {W_0:.2f} lbs")
 print(f"Empty Weight W_E = {W_e:.2f} lbs")
 print(f"Feul Weight W_F = {W_f:.2f} lbs")
+
+#Part 8: Calculating W/S and T/W
+
+#Flight Parameters
+SFL = 9000 #ft
+STOFL = 9000
+rho = 0.002377 #slug/ft^3
+C_L_Max_L = 2.3 #In range for transport jets for Transport Jets from roskam
+a = -2.5229 #all letter values from roskam 3.4 and 3.5
+b = 1.0000
+c = 0.0199
+d = 0.7531
+sigma = 1 #taking off at sea level so density ratio = 1
+CL_Max_T0 = 2
+TOP25 = STOFL/37.5
+
+#Calculating using roskam equations for landing constraint
+V_Stall_L = np.sqrt(SFL/0.507) * 1.688
+Wing_Loading_L = 0.5 * rho * V_Stall_L **2 * C_L_Max_L
+Total_Weight_Ratio = (W_0-W_f)/W_0
+
+#finding the max wing loading for our landing length
+Wing_Loading_TO = Wing_Loading_L / Total_Weight_Ratio 
+
+
+#creating graph for takeoff constraints
+def TW(WS):
+    return WS / (sigma * CL_Max_T0 * TOP25)
+
+def W_S(W_S,T_W):
+    return np.ones_like(T_W) * W_S
+
+#plotting the constraint graph and shading in feasible region
+plot_WS = np.linspace(0,1.1 * Wing_Loading_TO,100)
+plot_TW = np.linspace(0,1,100)
+
+WS = 150
+TW_Ratio = 0.35
+
+plt.plot(W_S(Wing_Loading_TO,plot_TW),plot_TW,label = "Landing Constraint")
+plt.plot(plot_WS,TW(plot_WS),label = "Takeoff Constraint")
+plt.plot(WS,TW_Ratio,"ro",label =  "Selected Values")
+plt.fill_between(np.linspace(0,Wing_Loading_TO,100),TW(np.linspace(0,Wing_Loading_TO,100)),1.0,color = "green",alpha = 0.25,label="Feasible Region")
+plt.xlabel("Take off Wing Loading (psf)")
+plt.ylabel("Takeoff Thrust to Weight Ratio")
+plt.title("Constraint Diagram")
+plt.legend()
+plt.show()
+
+print(f"The wing area is {W_0/WS:.2f} sq ft")
+print(f"The aircraft thrust is {W_0*TW_Ratio:.2f} lbs")
