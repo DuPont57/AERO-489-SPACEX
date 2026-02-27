@@ -78,7 +78,7 @@ W_f = WfW0 * W_0
 print("Estimated Values:")
 print(f"Gross Takeoff Weight W_0 = {W_0:.2f} lbs")
 print(f"Empty Weight W_E = {W_e:.2f} lbs")
-print(f"Feul Weight W_F = {W_f:.2f} lbs")
+print(f"Fuel Weight W_F = {W_f:.2f} lbs")
 
 #Part 8: Calculating W/S and T/W
 
